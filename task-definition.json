@@ -31,6 +31,10 @@
         {
           "name": "SPRING_DATASOURCE_USERNAME",
           "value": "admin"
+        },
+        {
+          "name": "APP_CORS_ALLOWED_ORIGINS",
+          "value": "http://localhost:5173,http://biztrips-fe-alb-613393037.us-east-1.elb.amazonaws.com"
         }
       ],
       "secrets": [
