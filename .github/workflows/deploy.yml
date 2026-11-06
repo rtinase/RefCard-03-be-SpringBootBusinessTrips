@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     name: Tests ausführen
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,7 +25,7 @@ jobs:
 
   build:
     name: Jar bauen
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     needs: test
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +41,7 @@ jobs:
         run: ./mvnw clean package -DskipTests
 
       - name: Jar als Artefakt hochladen
+        continue-on-error: true   # Artefakt-Speicherquota des Accounts ist erschoepft; der Deploy-Job braucht das Artefakt nicht
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
@@ -48,7 +49,7 @@ jobs:
 
   deploy-ecs:
     name: Image nach ECR pushen und ECS-Service aktualisieren
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     steps:
@@ -60,7 +61,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: eu-central-1
+          aws-region: us-east-1
 
       - name: Bei ECR anmelden
         id: ecr-login
@@ -72,7 +73,7 @@ jobs:
           ECR_REPOSITORY: biztrips-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build \
+          docker build --platform linux/amd64 \
             -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
             -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" .
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
