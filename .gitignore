@@ -37,3 +37,6 @@ build/
 
 ### Docker Compose local MariaDB data (regenerated on `docker compose up`) ###
 docker/database/
+
+### Local file storage for employee photos (EX-04) ###
+uploads/

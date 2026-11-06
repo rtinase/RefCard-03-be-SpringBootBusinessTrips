@@ -24,6 +24,9 @@ public class Employee implements Serializable {
 	private String jobTitle;
 	private String username;
 
+	@JsonIgnore
+	private String profilePictureFilename;
+
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 

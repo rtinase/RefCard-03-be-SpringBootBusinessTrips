@@ -15,4 +15,11 @@ public class TripNotFoundAdvice {
 	String productNotFoundHandler(TriptNotFoundException ex) {
 		return ex.getMessage();
 	}
+
+	@ResponseBody
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	String badRequestHandler(IllegalArgumentException ex) {
+		return ex.getMessage();
+	}
 }
