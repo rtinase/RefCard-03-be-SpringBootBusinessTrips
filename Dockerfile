@@ -14,4 +14,6 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
+ENV APP_STORAGE_LOCATION=/app/uploads
+VOLUME ["/app/uploads"]
 ENTRYPOINT ["java", "-jar", "app.jar"]
